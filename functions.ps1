@@ -44,6 +44,12 @@ function Set-LabAutologon{
 }
 
 function Install-LabActiveDirectoryServices{
+    param(
+        [string]$DomainName,
+        [string]$DomainNetbiosName,
+        [string]$SafeModeAdministratorPassword
+        
+    )
     
     #install binaries
     $feature = Get-WindowsFeature -Name AD-Domain-Services
@@ -51,6 +57,22 @@ function Install-LabActiveDirectoryServices{
         Add-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools -Restart
     }
 
-    #install AD
+    $secureString = ConvertTo-SecureString -String $SafeModeAdministratorPassword -AsPlainText -Force
+
+    #promote domain controller
+    Import-Module ADDSDeployment
+    Install-ADDSForest `
+    -CreateDnsDelegation:$false `
+    -DatabasePath "C:\Windows\NTDS" `
+    -DomainMode "Win2012R2" `
+    -DomainName "CONTOSO.COM" `
+    -DomainNetbiosName "CONTOSO" `
+    -ForestMode "Win2012R2" `
+    -InstallDns:$true `
+    -LogPath "C:\Windows\NTDS" `
+    -NoRebootOnCompletion:$false `
+    -SysvolPath "C:\Windows\SYSVOL" `
+    -Force:$true `
+    -SafeModeAdministratorPassword $secureString
 
 }

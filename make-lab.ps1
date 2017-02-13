@@ -3,6 +3,10 @@ $username = $env:USERDOMAIN + "\" + $env:USERNAME
 $password = "demo!234"
 $computername = "SP2013"
 
+$domainName = "CONTOSO.COM"
+$domainNetbiosName = "CONTOSO"
+$safemodeAdministratorPassword = "demo!234"
+
 
 #import funstions
 . "$PSScriptRoot\functions.ps1"
@@ -21,4 +25,4 @@ Set-LabAutologon -Username $username -Password $password
 Rename-LabComputer -NewName $computername
 
 # 4. install active directory
-Install-LabActiveDirectoryServices 
+Install-LabActiveDirectoryServices -DomainName $domainName -DomainNetbiosName $domainNetbiosName -SafeModeAdministratorPassword $safemodeAdministratorPassword
