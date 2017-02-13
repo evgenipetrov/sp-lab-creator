@@ -17,7 +17,8 @@ Set-LabRunOnce -Command $command
 # 2. enable automatic logon with current user
 Set-LabAutologon -Username $username -Password $password
 
-#2. rename computer and reboot
+# 3. rename computer and reboot
 Rename-LabComputer -NewName $computername
 
-
+# 4. install active directory
+Install-LabActiveDirectoryServices 

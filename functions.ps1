@@ -42,3 +42,15 @@ function Set-LabAutologon{
     Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name DefaultUsername -Value $username
     Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name DefaultPassword -Value $password
 }
+
+function Install-LabActiveDirectoryServices{
+    
+    #install binaries
+    $feature = Get-WindowsFeature -Name AD-Domain-Services
+    if(-Not $feature.Installed){
+        Add-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools -Restart
+    }
+
+    #install AD
+
+}
