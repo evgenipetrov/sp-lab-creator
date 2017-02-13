@@ -5,7 +5,10 @@ $computername = "SP2013"
 
 $domainName = "CONTOSO.COM"
 $domainNetbiosName = "CONTOSO"
-$safemodeAdministratorPassword = "demo!234"
+$safemodeAdministratorPassword = $password
+
+$dbServiceUser = 'sql_service'
+$dbServicePassword = $password
 
 
 #import funstions
@@ -25,4 +28,12 @@ Set-LabAutologon -Username $username -Password $password
 Rename-LabComputer -NewName $computername
 
 # 4. install active directory
+$username = $domainName +"\" + $env:USERNAME
+Set-LabAutologon -Username $username -Password $password
 Install-LabActiveDirectoryServices -DomainName $domainName -DomainNetbiosName $domainNetbiosName -SafeModeAdministratorPassword $safemodeAdministratorPassword
+
+# 5. create service accounts
+Add-LabServiceAccounts -Password $password
+
+# 5. create service accounts
+Add-LabDatabase -Username $dbServiceUser -Password $dbServicePassword

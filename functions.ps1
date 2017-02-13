@@ -57,9 +57,14 @@ function Install-LabActiveDirectoryServices{
         Add-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools -Restart
     }
 
+    #promote domain controller
+    $adComputer = Get-ADComputer -Identity $env:COMPUTERNAME
+
+    if($adComputer -eq $null){
+
     $secureString = ConvertTo-SecureString -String $SafeModeAdministratorPassword -AsPlainText -Force
 
-    #promote domain controller
+    
     Import-Module ADDSDeployment
     Install-ADDSForest `
     -CreateDnsDelegation:$false `
@@ -74,5 +79,46 @@ function Install-LabActiveDirectoryServices{
     -SysvolPath "C:\Windows\SYSVOL" `
     -Force:$true `
     -SafeModeAdministratorPassword $secureString
+    }
+}
 
+function Add-LabServiceAccounts{
+    param(
+        [string]$Password
+    )
+    
+    $usernames = @('sql_service',
+                   'sp_farm')
+
+    foreach($username in $usernames){
+        $userPrincipalName = $username +"@" + $env:USERDNSDOMAIN.ToLower() 
+        $accountPassword = ConvertTo-SecureString -String $Password -AsPlainText -Force
+
+        try{
+            Get-ADUser -Identity $username -ErrorAction SilentlyContinue
+        }
+        catch{
+            New-ADUser -Name $username -UserPrincipalName $userPrincipalName -AccountPassword $accountPassword -PasswordNeverExpires:$true -ChangePasswordAtLogon:$false -Enabled:$true
+        }
+    }
+}
+
+function Add-LabDatabase{
+    param(
+        [string]$Username,
+        [string]$Password
+    )
+
+    $path = $PSScriptRoot + "\iso\sql"
+    $iso = Get-ChildItem -Path $path
+
+    $mountResult = Mount-DiskImage -ImagePath $iso.FullName -PassThru
+    $drive = $mountResult | Get-Volume
+
+    $setup = "$($drive.driveletter):\setup.exe"
+
+    $command = "cmd /c $setup /ACTION=Install /IACCEPTSQLSERVERLICENSETERMS /FEATURES=SQLEngine,ADV_SSMS /INSTANCENAME=MSSQLSERVER /Q /SQLSVCACCOUNT=$Username /SQLSVCPASSWORD=$Password"
+    Invoke-Expression -Command:$command
+
+    Dismount-DiskImage -DevicePath $drive
 }
