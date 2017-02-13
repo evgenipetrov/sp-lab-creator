@@ -122,5 +122,5 @@ function Add-LabDatabase{
     $command = "cmd /c $setup /ACTION=Install /IACCEPTSQLSERVERLICENSETERMS /FEATURES=SQLEngine,ADV_SSMS /INSTANCENAME=MSSQLSERVER /Q /SQLSVCACCOUNT=$Username /SQLSVCPASSWORD=$Password /INDICATEPROGRESS /SQLSYSADMINACCOUNTS=$sqlsysadminaccounts"
     Invoke-Expression -Command:$command
 
-    #Dismount-DiskImage -DevicePath $drive
+    Dismount-DiskImage -ImagePath $iso.FullName 
 }
