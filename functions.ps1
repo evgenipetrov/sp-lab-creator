@@ -31,3 +31,14 @@ function Set-LabRunOnce{
         
     Set-ItemProperty -Path $registryKey -Name "NextRun" -Value $Command
 }
+
+function Set-LabAutologon{
+    param(
+        [string]$username,
+        [string]$password
+    )
+
+    Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name AutoAdminLogon -Value 1
+    Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name DefaultUsername -Value $username
+    Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name DefaultPassword -Value $password
+}
