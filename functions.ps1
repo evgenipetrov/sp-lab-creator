@@ -65,8 +65,8 @@ function Install-LabActiveDirectoryServices{
     -CreateDnsDelegation:$false `
     -DatabasePath "C:\Windows\NTDS" `
     -DomainMode "Win2012R2" `
-    -DomainName "CONTOSO.COM" `
-    -DomainNetbiosName "CONTOSO" `
+    -DomainName $DomainName `
+    -DomainNetbiosName $DomainNetbiosName `
     -ForestMode "Win2012R2" `
     -InstallDns:$true `
     -LogPath "C:\Windows\NTDS" `
