@@ -109,18 +109,26 @@ function Add-LabDatabase{
         [string]$Password
     )
 
-    $path = $PSScriptRoot + "\iso\sql"
-    $iso = Get-ChildItem -Path $path
+    $sqlService = Get-Service -Name MSSQLSERVER
 
-    $mountResult = Mount-DiskImage -ImagePath $iso.FullName -PassThru
-    $drive = $mountResult | Get-Volume
+    try{
+        $sqlService = Get-Service -Name MSSQLSERVER
+    }
+    catch{
+        $path = $PSScriptRoot + "\iso\sql"
+        $iso = Get-ChildItem -Path $path
 
-    $setup = "$($drive.driveletter):\setup.exe"
+        $mountResult = Mount-DiskImage -ImagePath $iso.FullName -PassThru
+        $drive = $mountResult | Get-Volume
 
-    $sqlsysadminaccounts = $env:USERDOMAIN + "\" + $env:USERNAME
+        $setup = "$($drive.driveletter):\setup.exe"
 
-    $command = "cmd /c $setup /ACTION=Install /IACCEPTSQLSERVERLICENSETERMS /FEATURES=SQLEngine,ADV_SSMS /INSTANCENAME=MSSQLSERVER /Q /SQLSVCACCOUNT=$Username /SQLSVCPASSWORD=$Password /INDICATEPROGRESS /SQLSYSADMINACCOUNTS=$sqlsysadminaccounts"
-    Invoke-Expression -Command:$command
+        $sqlsysadminaccounts = $env:USERDOMAIN + "\" + $env:USERNAME
 
-    Dismount-DiskImage -ImagePath $iso.FullName 
+        $command = "cmd /c $setup /ACTION=Install /IACCEPTSQLSERVERLICENSETERMS /FEATURES=SQLEngine,ADV_SSMS /INSTANCENAME=MSSQLSERVER /Q /SQLSVCACCOUNT=$Username /SQLSVCPASSWORD=$Password /INDICATEPROGRESS /SQLSYSADMINACCOUNTS=$sqlsysadminaccounts"
+        Invoke-Expression -Command:$command
+
+        Dismount-DiskImage -ImagePath $iso.FullName 
+    }
+   
 }
