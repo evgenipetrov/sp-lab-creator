@@ -19,17 +19,23 @@ function Get-LabScriptFile{
 
 function Set-LabRunOnce{
     param(
-        [string]$Command
+        [string]$Command,
+        [bool]$Enabled=$true
     )
-
     $registryKey = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"
-    $keyExists = Test-Path $registryKey
+    if($Enabled -eq $true){
 
-    if(-Not $keyExists){
-        New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\" -Name "RunOnce"
-    }
+        $keyExists = Test-Path $registryKey
+
+        if(-Not $keyExists){
+            New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\" -Name "RunOnce"
+        }
         
-    Set-ItemProperty -Path $registryKey -Name "NextRun" -Value $Command
+        Set-ItemProperty -Path $registryKey -Name "NextRun" -Value $Command
+    
+    } else {
+        Remove-Item -Path $registryKey
+    }
 }
 
 function Set-LabAutologon{
@@ -106,8 +112,6 @@ function Add-LabDatabase{
         [string]$Password
     )
 
-    $sqlService = Get-Service -Name MSSQLSERVER
-
     try{
         $sqlService = Get-Service -Name MSSQLSERVER
     }
@@ -128,4 +132,51 @@ function Add-LabDatabase{
         Dismount-DiskImage -ImagePath $iso.FullName 
     }
   
+}
+
+function Add-LabSharePoint{
+    param(
+    [string]$SharePointVersion,
+    [bool]$AutoLogon,
+    [string]$SKU,
+    [string]$ProductKey,
+    [string]$FarmPassPhrase,
+    [string]$DatabaseServerInstance,
+    [string]$FarmAccountUsername,
+    [string]$FarmAccountPassword,
+    [string]$ObjectCacheSuperUserAccount,
+    [string]$ObjectCacheSuperReaderAccount,
+    [string]$ServicesAccount,
+    [string]$ServicesAccountPassword,
+    [string]$WebApplicationAccount,
+    [string]$WebApplicationAccountPassword,
+    [string]$MySitesAccount,
+    [string]$MySitesAccountPassword,
+    [string]$SearchServiceApplicationAccount,
+    [string]$SearchServiceApplicationAccountPassword,
+    [string]$SearchCrawlAccount,
+    [string]$SearchCrawlPassword
+    )
+
+
+
+    try{
+        $timerService = Get-Service -Name SPTimerv4
+    }
+    catch{
+        $path = $PSScriptRoot + "\iso\sql"
+        $iso = Get-ChildItem -Path $path
+
+        $mountResult = Mount-DiskImage -ImagePath $iso.FullName -PassThru
+        $drive = $mountResult | Get-Volume
+
+        $setup = "$($drive.driveletter):\setup.exe"
+
+        $sqlsysadminaccounts = $env:USERDOMAIN + "\" + $env:USERNAME
+
+        $command = "cmd /c $setup /ACTION=Install /IACCEPTSQLSERVERLICENSETERMS /FEATURES=SQLEngine,ADV_SSMS /INSTANCENAME=MSSQLSERVER /Q /SQLSVCACCOUNT=$Username /SQLSVCPASSWORD=$Password /INDICATEPROGRESS /SQLSYSADMINACCOUNTS=$sqlsysadminaccounts"
+        Invoke-Expression -Command:$command
+
+        Dismount-DiskImage -ImagePath $iso.FullName 
+    }
 }
