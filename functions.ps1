@@ -82,25 +82,22 @@ function Install-LabActiveDirectoryServices{
     }
 }
 
-function Add-LabServiceAccounts{
+function Add-LabServiceAccount{
     param(
+        [string]$Username,
         [string]$Password
     )
     
-    $usernames = @('sql_service',
-                   'sp_farm')
-
-    foreach($username in $usernames){
-        $userPrincipalName = $username +"@" + $env:USERDNSDOMAIN.ToLower() 
+        $userPrincipalName = $Username +"@" + $env:USERDNSDOMAIN.ToLower() 
         $accountPassword = ConvertTo-SecureString -String $Password -AsPlainText -Force
 
         try{
-            Get-ADUser -Identity $username -ErrorAction SilentlyContinue
+            Get-ADUser -Identity $Username -ErrorAction SilentlyContinue
         }
         catch{
-            New-ADUser -Name $username -UserPrincipalName $userPrincipalName -AccountPassword $accountPassword -PasswordNeverExpires:$true -ChangePasswordAtLogon:$false -Enabled:$true
+            New-ADUser -Name $Username -UserPrincipalName $userPrincipalName -AccountPassword $accountPassword -PasswordNeverExpires:$true -ChangePasswordAtLogon:$false -Enabled:$true
         }
-    }
+
 }
 
 function Add-LabDatabase{
