@@ -69,7 +69,7 @@ Add-LabServiceAccount -Username $searchServiceApplicationAccount -Password $sear
 Add-LabServiceAccount -Username $searchCrawlAccount -Password $searchCrawlAccountPassword
 
 # 5. install database
-Add-LabDatabase -Username $dbServiceUser -Password $dbServicePassword
+# Add-LabDatabase -Username $dbServiceUser -Password $dbServicePassword
 
 # 6. disable RunOnce to avoid interference with AutoSPInstaller. Temporarily.
 Set-LabRunOnce -Enabled:$false

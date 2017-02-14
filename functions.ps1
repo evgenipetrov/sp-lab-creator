@@ -113,11 +113,11 @@ function Add-LabDatabase{
     )
 
     try{
-        $sqlService = Get-Service -Name MSSQLSERVER
+        $sqlService = Get-Service -Name MSSQLSERVER -ErrorAction Stop
     }
     catch{
         $path = $PSScriptRoot + "\iso\sql"
-        $iso = Get-ChildItem -Path $path
+        $iso = Get-ChildItem -Path $path -Filter "*.iso"
 
         $mountResult = Mount-DiskImage -ImagePath $iso.FullName -PassThru
         $drive = $mountResult | Get-Volume
@@ -161,22 +161,24 @@ function Add-LabSharePoint{
 
 
     try{
-        $timerService = Get-Service -Name SPTimerv4
+        $timerService = Get-Service -Name SPTimerv4 -ErrorAction Stop
     }
     catch{
-        $path = $PSScriptRoot + "\iso\sql"
-        $iso = Get-ChildItem -Path $path
+        $path = $PSScriptRoot + "\iso\sharepoint"
+        $iso = Get-ChildItem -Path $path -Filter "*.iso"
+
+        $autospinstaller = $PSScriptRoot + "\scripts\AutoSPInstaller"
+
+        Move-Item -Path $autospinstaller -Destination "c:\"
 
         $mountResult = Mount-DiskImage -ImagePath $iso.FullName -PassThru
         $drive = $mountResult | Get-Volume
 
-        $setup = "$($drive.driveletter):\setup.exe"
+        $sharepointInstall = "$($drive.driveletter):\"
 
-        $sqlsysadminaccounts = $env:USERDOMAIN + "\" + $env:USERNAME
-
-        $command = "cmd /c $setup /ACTION=Install /IACCEPTSQLSERVERLICENSETERMS /FEATURES=SQLEngine,ADV_SSMS /INSTANCENAME=MSSQLSERVER /Q /SQLSVCACCOUNT=$Username /SQLSVCPASSWORD=$Password /INDICATEPROGRESS /SQLSYSADMINACCOUNTS=$sqlsysadminaccounts"
-        Invoke-Expression -Command:$command
+        Get-ChildItem -Path $sharepointInstall -Recurse | Copy-Item -Destination "C:\AutoSPInstaller\sp\2013\SharePoint\" -Recurse -Force
 
         Dismount-DiskImage -ImagePath $iso.FullName 
+
     }
 }
