@@ -35,5 +35,5 @@ Install-LabActiveDirectoryServices -DomainName $domainName -DomainNetbiosName $d
 # 5. create service accounts
 Add-LabServiceAccounts -Password $password
 
-# 5. create service accounts
+# 5. install database
 Add-LabDatabase -Username $dbServiceUser -Password $dbServicePassword
