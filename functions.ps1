@@ -78,18 +78,12 @@ function Install-LabActiveDirectoryServices{
         -ForestMode "Win2012R2" `
         -InstallDns:$true `
         -LogPath "C:\Windows\NTDS" `
-        -NoRebootOnCompletion:$false `
+        -NoRebootOnCompletion:$true `
         -SysvolPath "C:\Windows\SYSVOL" `
         -Force:$true `
         -SafeModeAdministratorPassword $secureString
+        Restart-Computer
     }
-
-
-
-
-
-
-
 }
 
 function Add-LabServiceAccount{
