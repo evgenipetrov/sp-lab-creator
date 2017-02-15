@@ -214,7 +214,9 @@ function Add-LabSharePoint{
         $xmlFile = Resolve-Path $path
         $autospinstallerConfig.Save($xmlFile.Path)
 
-        $command = "cmd /c .\SP\AutoSPInstaller\AutoSPInstallerLaunch.bat"
+        $autospinstallerLauncher = (Get-ChildItem $xmlFile.Path).DirectoryName + "\AutoSPInstallerLaunch.bat"
+
+        $command = "cmd /c $autospinstallerLauncher"
         Invoke-Expression -Command:$command
 
     }
