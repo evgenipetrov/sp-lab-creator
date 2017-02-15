@@ -73,14 +73,25 @@ $dbServiceUser = $env:USERDOMAIN +"\" + $dbServiceUser
 Add-LabDatabase -Username $dbServiceUser -Password $dbServicePassword
 
 # 6. install sharepoint
-Add-LabSharePoint -SharePointVersion 2013 -AutoLogon:$true -SKU Enterprise -ProductKey xxx-xxx-xxx -FarmPassPhrase $password -DatabaseServerInstance xxxx `
-    -FarmAccountUsername xxxxx -FarmAccountPassword $password `
-    -ObjectCacheSuperUserAccount xxxxx `
-    -ObjectCacheSuperReaderAccount xxxxx `
-    -ServicesAccount xxxxxxx -ServicesAccountPassword $password `
-    -WebApplicationAccount xxxxxxx -WebApplicationAccountPassword $password `
-    -MySitesAccount xxxxxxx -MySitesAccountPassword $password `
-    -SearchServiceApplicationAccount xxxxxxx -SearchServiceApplicationAccountPassword $password `
-    -SearchCrawlAccount xxxxxxx -SearchCrawlPassword $password 
+$farmAccountUsername = $env:USERDOMAIN +"\" + $farmAccountUsername
+$objectCacheSuperUserAccount = $env:USERDOMAIN +"\" + $objectCacheSuperUserAccount
+$objectCacheSuperReaderAccount = $env:USERDOMAIN +"\" + $objectCacheSuperReaderAccount
+$servicesAccount = $env:USERDOMAIN +"\" + $servicesAccount
+$webApplicationAccount = $env:USERDOMAIN +"\" + $webApplicationAccount
+$mySitesAccount = $env:USERDOMAIN +"\" + $mySitesAccount
+$searchServiceApplicationAccount = $env:USERDOMAIN +"\" + $searchServiceApplicationAccount
+$searchCrawlAccount = $env:USERDOMAIN +"\" + $searchCrawlAccount
+
+
+
+Add-LabSharePoint -SharePointVersion 2013 -AutoLogon:$true -SKU Enterprise -ProductKey NQTMW-K63MQ-39G6H-B2CH9-FRDWJ -FarmPassPhrase $password -DatabaseServerInstance localhost `
+    -FarmAccountUsername $farmAccountUsername -FarmAccountPassword $password `
+    -ObjectCacheSuperUserAccount $objectCacheSuperUserAccount `
+    -ObjectCacheSuperReaderAccount $objectCacheSuperReaderAccount `
+    -ServicesAccount $servicesAccount -ServicesAccountPassword $password `
+    -WebApplicationAccount $webApplicationAccount -WebApplicationAccountPassword $password `
+    -MySitesAccount $mySitesAccount -MySitesAccountPassword $password `
+    -SearchServiceApplicationAccount $searchServiceApplicationAccount -SearchServiceApplicationAccountPassword $password `
+    -SearchCrawlAccount $searchCrawlAccount -SearchCrawlPassword $password 
 
 

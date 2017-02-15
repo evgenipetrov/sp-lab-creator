@@ -179,5 +179,36 @@ function Add-LabSharePoint{
 
         Dismount-DiskImage -ImagePath $iso.FullName 
 
+        $path = $autospinstaller + "\SP\AutoSPInstaller\AutoSPInstallerInput.xml"
+        [xml]$autospinstallerConfig = Get-Content -Path $path
+
+        $autospinstallerConfig.Configuration.Install.PIDKey = $ProductKey
+        $autospinstallerConfig.Configuration.Farm.Passphrase = $FarmPassPhrase
+
+        $autospinstallerConfig.Configuration.Farm.Database.DBAlias.DBInstance = $DatabaseServerInstance
+
+        $autospinstallerConfig.Configuration.Farm.Account.Username = $FarmAccountUsername
+        $autospinstallerConfig.Configuration.Farm.Account.Password = $FarmAccountPassword
+
+        (Select-Xml -Xml $autospinstallerConfig -XPath "//ManagedAccount[@CommonName='spservice']").Node.Username = $ServicesAccount
+        (Select-Xml -Xml $autospinstallerConfig -XPath "//ManagedAccount[@CommonName='spservice']").Node.Password = $password
+
+        (Select-Xml -Xml $autospinstallerConfig -XPath "//ManagedAccount[@CommonName='Portal']").Node.Username = $WebApplicationAccount
+        (Select-Xml -Xml $autospinstallerConfig -XPath "//ManagedAccount[@CommonName='Portal']").Node.Password = $password
+
+        (Select-Xml -Xml $autospinstallerConfig -XPath "//ManagedAccount[@CommonName='MySiteHost']").Node.Username = $MySitesAccount
+        (Select-Xml -Xml $autospinstallerConfig -XPath "//ManagedAccount[@CommonName='MySiteHost']").Node.Password = $password
+
+        (Select-Xml -Xml $autospinstallerConfig -XPath "//ManagedAccount[@CommonName='SearchService']").Node.Username = $SearchServiceApplicationAccount
+        (Select-Xml -Xml $autospinstallerConfig -XPath "//ManagedAccount[@CommonName='SearchService']").Node.Password = $password
+
+        $autospinstallerConfig.Configuration.Farm.ObjectCacheAccounts.SuperUser = $ObjectCacheSuperUserAccount
+        $autospinstallerConfig.Configuration.Farm.ObjectCacheAccounts.SuperReader = $ObjectCacheSuperReaderAccount
+
+        $autospinstallerConfig.Configuration.ServiceApps.EnterpriseSearchService.EnterpriseSearchServiceApplications.EnterpriseSearchServiceApplication.ContentAccessAccount = $SearchCrawlAccount
+        $autospinstallerConfig.Configuration.ServiceApps.EnterpriseSearchService.EnterpriseSearchServiceApplications.EnterpriseSearchServiceApplication.ContentAccessAccountPassword = $SearchCrawlPassword
+
+        $xmlFile = Resolve-Path $path
+        $autospinstallerConfig.Save($xmlFile.Path)
     }
 }
