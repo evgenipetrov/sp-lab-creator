@@ -173,14 +173,15 @@ function Add-LabSharePoint{
 
         $autospinstaller = $PSScriptRoot + "\scripts\AutoSPInstaller"
 
-        Move-Item -Path $autospinstaller -Destination "c:\"
+        # Move-Item -Path $autospinstaller -Destination "c:\"
 
         $mountResult = Mount-DiskImage -ImagePath $iso.FullName -PassThru
         $drive = $mountResult | Get-Volume
 
         $sharepointInstall = "$($drive.driveletter):\"
 
-        Get-ChildItem -Path $sharepointInstall -Recurse | Copy-Item -Destination "C:\AutoSPInstaller\sp\2013\SharePoint\" -Recurse -Force
+        # Get-ChildItem -Path $sharepointInstall -Recurse | Copy-Item -Destination "C:\AutoSPInstaller\sp\2013\SharePoint\" -Recurse -Force
+        Get-ChildItem -Path $sharepointInstall -Recurse | Copy-Item -Destination "$autospinstaller\sp\$SharePointVersion\SharePoint\" -Recurse -Force
 
         Dismount-DiskImage -ImagePath $iso.FullName 
 
