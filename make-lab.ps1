@@ -7,7 +7,7 @@ $domainName = "CONTOSO.COM"
 $domainNetbiosName = "CONTOSO"
 $safemodeAdministratorPassword = $password
 
-$dbServiceUser = $env:USERDOMAIN + "\" + 'sql_service'
+$dbServiceUser = 'SQL_Service'
 $dbServicePassword = $password
 
 $farmAccountUsername = "SP_Farm"
