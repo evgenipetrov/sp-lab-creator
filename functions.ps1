@@ -136,6 +136,7 @@ function Add-LabSharePoint{
     param(
     [string]$SharePointVersion,
     [bool]$AutoLogon,
+    [string]$SetupAccountPassword,
     [string]$SKU,
     [string]$ProductKey,
     [string]$FarmPassPhrase,
@@ -181,6 +182,8 @@ function Add-LabSharePoint{
 
         $path = $autospinstaller + "\SP\AutoSPInstaller\AutoSPInstallerInput.xml"
         [xml]$autospinstallerConfig = Get-Content -Path $path
+
+        $autospinstallerConfig.Configuration.Install.AutoAdminLogon.Password = $SetupAccountPassword
 
         $autospinstallerConfig.Configuration.Install.PIDKey = $ProductKey
         $autospinstallerConfig.Configuration.Farm.Passphrase = $FarmPassPhrase

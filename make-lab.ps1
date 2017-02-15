@@ -72,6 +72,9 @@ Add-LabServiceAccount -Username $searchCrawlAccount -Password $searchCrawlAccoun
 $dbServiceUser = $env:USERDOMAIN +"\" + $dbServiceUser
 Add-LabDatabase -Username $dbServiceUser -Password $dbServicePassword
 
+# 6. disable run once and hand it over to apautoinstaller
+Set-LabRunOnce -Enabled:$false
+
 # 6. install sharepoint
 $farmAccountUsername = $env:USERDOMAIN +"\" + $farmAccountUsername
 $objectCacheSuperUserAccount = $env:USERDOMAIN +"\" + $objectCacheSuperUserAccount
@@ -84,7 +87,7 @@ $searchCrawlAccount = $env:USERDOMAIN +"\" + $searchCrawlAccount
 
 
 
-Add-LabSharePoint -SharePointVersion 2013 -AutoLogon:$true -SKU Enterprise -ProductKey NQTMW-K63MQ-39G6H-B2CH9-FRDWJ -FarmPassPhrase $password -DatabaseServerInstance localhost `
+Add-LabSharePoint -SharePointVersion 2013 -AutoLogon:$true -SetupAccountPassword $password -SKU Enterprise -ProductKey NQTMW-K63MQ-39G6H-B2CH9-FRDWJ -FarmPassPhrase $password -DatabaseServerInstance localhost `
     -FarmAccountUsername $farmAccountUsername -FarmAccountPassword $password `
     -ObjectCacheSuperUserAccount $objectCacheSuperUserAccount `
     -ObjectCacheSuperReaderAccount $objectCacheSuperReaderAccount `
