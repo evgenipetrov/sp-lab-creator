@@ -87,7 +87,7 @@ $searchCrawlAccount = $env:USERDOMAIN +"\" + $searchCrawlAccount
 
 
 
-Add-LabSharePoint -SharePointVersion 2013 -AutoLogon:$true -SetupAccountPassword $password -SKU Enterprise -ProductKey NQTMW-K63MQ-39G6H-B2CH9-FRDWJ -FarmPassPhrase $password -DatabaseServerInstance localhost `
+Add-LabSharePoint -SharePointVersion 2013 -AutoLogon:$true -SetupAccountPassword $password -SKU Enterprise -ProductKey NQTMW-K63MQ-39G6H-B2CH9-FRDWJ -FarmPassPhrase $password -DatabaseServerInstance $computername `
     -FarmAccountUsername $farmAccountUsername -FarmAccountPassword $password `
     -ObjectCacheSuperUserAccount $objectCacheSuperUserAccount `
     -ObjectCacheSuperReaderAccount $objectCacheSuperReaderAccount `
