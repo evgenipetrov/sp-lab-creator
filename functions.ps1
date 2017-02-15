@@ -190,6 +190,7 @@ function Add-LabSharePoint{
 
         $autospinstallerConfig.Configuration.Farm.Database.DBAlias.DBInstance = $DatabaseServerInstance
 
+        $autospinstallerConfig.Configuration.Install.AutoAdminLogon.Enable = "true"
         $autospinstallerConfig.Configuration.Farm.Account.Username = $FarmAccountUsername
         $autospinstallerConfig.Configuration.Farm.Account.Password = $FarmAccountPassword
 
