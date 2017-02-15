@@ -69,12 +69,9 @@ Add-LabServiceAccount -Username $searchServiceApplicationAccount -Password $sear
 Add-LabServiceAccount -Username $searchCrawlAccount -Password $searchCrawlAccountPassword
 
 # 5. install database
-# Add-LabDatabase -Username $dbServiceUser -Password $dbServicePassword
+Add-LabDatabase -Username $dbServiceUser -Password $dbServicePassword
 
-# 6. disable RunOnce to avoid interference with AutoSPInstaller. Temporarily.
-Set-LabRunOnce -Enabled:$false
-
-# 7. install sharepoint
+# 6. install sharepoint
 Add-LabSharePoint -SharePointVersion 2013 -AutoLogon:$true -SKU Enterprise -ProductKey xxx-xxx-xxx -FarmPassPhrase $password -DatabaseServerInstance xxxx `
     -FarmAccountUsername xxxxx -FarmAccountPassword $password `
     -ObjectCacheSuperUserAccount xxxxx `
