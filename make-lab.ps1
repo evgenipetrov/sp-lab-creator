@@ -43,7 +43,7 @@ $searchCrawlAccountPassword = $password
 
 # 1. add current script to run once on current user logon
 $file = Get-LabScriptFile
-$command = "$PSHome\powershell.exe -File " + $file.FullName
+$command = "$PSHome\powershell.exe -NoExit -File " + $file.FullName
 Set-LabRunOnce -Command $command
 
 # 2. enable automatic logon with current user
